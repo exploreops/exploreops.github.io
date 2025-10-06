@@ -1,22 +1,349 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exploreops</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-        }
-        h1 {
-            color: #4CAF50;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Your Service — Diagnostics & Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="" crossorigin="anonymous">
+<!-- Chart.js (for a dynamic graph if you want) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  :root{
+    --bg:#0f1115;
+    --card:#141619;
+    --muted:#9aa3b2;
+    --accent:#8be04a; /* green */
+    --accent2:#ffb86b; /* orange for plan */
+    --glass: rgba(255,255,255,0.03);
+    --radius:14px;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0e1113 0%, #0b0b0b 100%);color:#e6eef8; -webkit-font-smoothing:antialiased}
+  .container{max-width:1200px;margin:0 auto;padding:36px;}
+  header{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo .mark{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#6ed3ff);display:flex;align-items:center;justify-content:center;color:#081019;font-weight:700}
+  nav{display:flex;gap:18px;align-items:center}
+  nav a{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:8px}
+  nav a.cta{background:linear-gradient(90deg,var(--accent),#7bd24c);color:#071014;font-weight:600}
+  /* hero */
+  .hero{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start;padding:28px 0}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border-radius:18px;padding:28px;box-shadow: 0 8px 30px rgba(2,6,23,0.6)}
+  .hero-left h1{font-size:32px;margin:10px 0 8px}
+  .hero-left p{color:var(--muted);line-height:1.6}
+  .hero-graph{margin-top:18px;position:relative;height:220px;border-radius:14px;overflow:hidden;background:linear-gradient(180deg, rgba(11,14,16,0.6), rgba(11,14,16,0.3));display:flex;align-items:center;justify-content:center}
+  /* curve line - we use SVG */
+  .graph-svg{width:100%;height:100%}
+  .cta-row{margin-top:18px;display:flex;gap:12px;align-items:center}
+  .btn{padding:10px 16px;border-radius:10px;border:0;background:var(--accent);color:#041016;font-weight:600;cursor:pointer}
+  .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+  /* features */
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+  .feature{background:var(--glass);padding:16px;border-radius:12px;text-align:center}
+  .feature i{font-size:22px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.02);display:inline-block;margin-bottom:8px}
+  .section-title{display:flex;align-items:center;gap:12px;margin:34px 0 12px}
+  .section-title h3{margin:0}
+  /* pricing */
+  .pricing{display:flex;gap:16px}
+  .plan{flex:1;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);text-align:center}
+  .plan.featured{background:linear-gradient(180deg,#f8dfb5 0%, #e3b26a 100%);color:#081014;box-shadow:0 10px 30px rgba(0,0,0,0.45)}
+  .plan h4{margin:8px 0}
+  .plan .price{font-weight:700;font-size:18px;margin:8px 0}
+  /* services row */
+  .services{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
+  .service-list{display:grid;gap:12px}
+  .service-item{display:flex;gap:12px;align-items:center;background:var(--glass);padding:12px;border-radius:12px}
+  .phone-mock{background:linear-gradient(180deg,#0b0d12, #0b1016);height:420px;border-radius:18px;display:flex;align-items:center;justify-content:center}
+  /* testimonial */
+  .testimonial{display:flex;gap:16px;align-items:center}
+  .testimonial img{width:120px;height:120px;border-radius:12px;object-fit:cover}
+  .meta{display:flex;align-items:center;gap:8px;margin-top:8px}
+  .stats{display:flex;gap:14px;margin-top:18px}
+  .stat{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:12px;border-radius:10px;text-align:center;min-width:110px}
+  footer{margin-top:42px;padding:22px 0;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+  /* responsive */
+  @media (max-width:980px){
+    .hero, .services{grid-template-columns:1fr}
+    .hero-graph{height:180px}
+    .features{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:560px){
+    .features{grid-template-columns:1fr}
+    nav{display:none}
+    .hero-left h1{font-size:26px}
+  }
+</style>
 </head>
 <body>
-    <h1>Welcome to Exploreops</h1>
-    <p>This website is hosted using <strong>GitHub Pages</strong>.</p>
+
+<div class="container">
+  <header>
+    <div class="logo">
+      <div class="mark">Y</div>
+      <div>
+        <div style="font-weight:700">YourService</div>
+        <div style="font-size:12px;color:var(--muted)">Diagnostics • Support • SaaS</div>
+      </div>
+    </div>
+    <nav>
+      <a href="#how">How it works</a>
+      <a href="#plans">Plans</a>
+      <a href="#reviews">Reviews</a>
+      <a class="cta" href="#contact">Get Started</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="card hero-left">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="opacity:0.9;color:var(--muted);font-size:13px">Learn About Us?</div>
+        <div style="font-size:12px;color:var(--muted)">EN • <strong>Log in</strong></div>
+      </div>
+
+      <h1>Portable diagnostics & smart analysis — services your customers can trust</h1>
+      <p>We provide on-demand diagnostic tools, remote support and subscription plans for clinics and customers. Portable, accurate and backed by cloud analytics.</p>
+
+      <div class="cta-row">
+        <button class="btn">Get Started</button>
+        <button class="btn secondary">Learn more</button>
+      </div>
+
+      <div class="hero-graph" aria-hidden="true">
+        <!-- simple SVG curve to mimic the green rising line -->
+        <svg class="graph-svg" viewBox="0 0 1200 220" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#7ef07a"/>
+              <stop offset="1" stop-color="#32c1ff"/>
+            </linearGradient>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="6" result="coloredBlur"></feGaussianBlur>
+              <feMerge>
+                <feMergeNode in="coloredBlur"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- faint grid dots -->
+          <rect width="1200" height="220" fill="transparent" />
+          <!-- path -->
+          <path d="M0,160 C120,160 180,140 300,130 C420,120 540,100 660,110 C780,120 880,60 960,30 C1060,0 1200,0 1200,0"
+                fill="none" stroke="url(#g1)" stroke-width="6" stroke-linecap="round" style="filter:url(#glow)"></path>
+
+          <!-- small markers -->
+          <circle cx="300" cy="130" r="8" fill="#6fffa1"></circle>
+          <text x="300" y="120" font-size="14" fill="#bfeec7" text-anchor="middle">$300</text>
+
+          <circle cx="960" cy="30" r="10" fill="#ffd46a"></circle>
+          <text x="960" y="20" font-size="14" fill="#ffe6c2" text-anchor="middle">SELL</text>
+        </svg>
+      </div>
+
+      <div class="features">
+        <div class="feature">
+          <i class="fa-solid fa-bolt"></i>
+          <strong>Fast and quality</strong>
+          <div style="color:var(--muted);font-size:13px;margin-top:6px">Quick results & reliable instruments</div>
+        </div>
+        <div class="feature">
+          <i class="fa-solid fa-shield-halved"></i>
+          <strong>Safe & secure</strong>
+          <div style="color:var(--muted);font-size:13px;margin-top:6px">Encrypted cloud data & secure backups</div>
+        </div>
+        <div class="feature">
+          <i class="fa-solid fa-headset"></i>
+          <strong>24/7 support</strong>
+          <div style="color:var(--muted);font-size:13px;margin-top:6px">Live chat & remote assistance</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right column: pricing / highlights -->
+    <aside class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:700">Our Plans</div>
+        <div style="font-size:13px;color:var(--muted)">Choose monthly or yearly</div>
+      </div>
+
+      <div id="plans" style="margin-top:18px" class="pricing">
+        <div class="plan">
+          <div style="font-size:12px;color:var(--muted)">Plan A</div>
+          <h4>Starter</h4>
+          <div class="price">$0 - $100</div>
+          <div style="color:var(--muted);font-size:13px">Basic tools & limited support</div>
+          <div style="margin-top:12px"><button class="btn secondary">Select</button></div>
+        </div>
+
+        <div class="plan featured">
+          <div style="font-size:12px;opacity:0.9">Plan B</div>
+          <h4>Pro</h4>
+          <div class="price">$101 - $1000</div>
+          <div style="font-size:13px;margin-top:8px">Included remote analysis & priority support</div>
+          <div style="margin-top:12px"><button class="btn">Get Pro</button></div>
+        </div>
+
+        <div class="plan">
+          <div style="font-size:12px;color:var(--muted)">Plan C</div>
+          <h4>Enterprise</h4>
+          <div class="price">$1001+</div>
+          <div style="color:var(--muted);font-size:13px">Custom integrations & SLA</div>
+          <div style="margin-top:12px"><button class="btn secondary">Contact</button></div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;background:rgba(255,255,255,0.02);padding:14px;border-radius:12px">
+        <div style="font-weight:700">Why Testfor?</div>
+        <div style="color:var(--muted);font-size:13px;margin-top:8px">We combine compact devices, cloud reporting and subscription services so clinics and remote users get faster diagnosis and AI-assisted reporting.</div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- Services + mockup -->
+  <section class="services">
+    <div class="card">
+      <div class="section-title"><h3>Services we offer</h3></div>
+      <div class="service-list">
+        <div class="service-item">
+          <i class="fa-solid fa-microscope" style="font-size:20px"></i>
+          <div>
+            <strong>Remote Diagnostics</strong>
+            <div style="color:var(--muted);font-size:13px">Send samples or connect device for cloud analysis</div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <i class="fa-solid fa-gear" style="font-size:20px"></i>
+          <div>
+            <strong>Device Leasing</strong>
+            <div style="color:var(--muted);font-size:13px">Monthly plans for portable analyzers</div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <i class="fa-solid fa-chart-line" style="font-size:20px"></i>
+          <div>
+            <strong>Reporting & Analytics</strong>
+            <div style="color:var(--muted);font-size:13px">Cloud dashboards and CSV export</div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <i class="fa-solid fa-users" style="font-size:20px"></i>
+          <div>
+            <strong>Training & Support</strong>
+            <div style="color:var(--muted);font-size:13px">On-site training and remote assistance</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;">
+        <button class="btn">Request Demo</button>
+        <button class="btn secondary">Contact Sales</button>
+      </div>
+
+    </div>
+
+    <aside class="card phone-mock">
+      <!-- placeholder for phone/mockup -->
+      <div style="width:180px;height:360px;border-radius:18px;background:linear-gradient(180deg,#071018, #0b1020);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,0.6)">
+        <div style="width:140px;height:300px;border-radius:12px;background:linear-gradient(180deg,#061018,#081428);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px">
+          <div style="width:100%;height:200px;border-radius:8px;background:linear-gradient(180deg,#05203a,#082033);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px">
+            App preview
+          </div>
+          <div style="margin-top:10px;color:var(--muted);font-size:12px">Mobile dashboard</div>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- testimonial & stats -->
+  <section style="margin-top:26px" class="card">
+    <div style="display:flex;justify-content:space-between;gap:18px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:260px">
+        <div style="font-weight:700">Client — Best Reviews</div>
+        <div style="color:var(--muted);margin-top:6px">“They helped us reduce turnaround time and made reporting painless.”</div>
+        <div class="meta">
+          <img src="https://placehold.co/48x48" style="width:48px;height:48px;border-radius:999px;object-fit:cover" alt="avatar">
+          <div>
+            <div style="font-weight:700">Sammad Sepehri</div>
+            <div style="color:var(--muted);font-size:13px">Founder, ClinicName</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="text-align:center">
+          <div style="font-weight:800;font-size:18px">+10K</div>
+          <div style="color:var(--muted);font-size:12px">Active users</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-weight:800;font-size:18px">99%</div>
+          <div style="color:var(--muted);font-size:12px">Profit return</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-weight:800;font-size:18px">+20K</div>
+          <div style="color:var(--muted);font-size:12px">Satisfaction</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- contact -->
+  <section id="contact" style="margin-top:28px;display:grid;grid-template-columns:2fr 1fr;gap:18px">
+    <div class="card">
+      <div style="font-weight:700">Contact & Book a Demo</div>
+      <p style="color:var(--muted);margin-top:6px">Fill this quick form — we'll respond within one business day.</p>
+
+      <form id="contactForm" style="margin-top:12px;display:grid;gap:8px">
+        <input name="name" placeholder="Your name" style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
+        <input name="email" type="email" placeholder="Email" style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
+        <textarea name="message" rows="4" placeholder="Tell us about your needs" style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit"></textarea>
+        <div style="display:flex;gap:8px">
+          <button type="submit" class="btn">Send Request</button>
+          <button type="button" class="btn secondary" onclick="window.location='#'">Schedule call</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card" style="padding:18px">
+      <div style="font-weight:700">Need help deciding?</div>
+      <div style="color:var(--muted);margin-top:8px">Email: hello@yourservice.example</div>
+      <div style="color:var(--muted);margin-top:6px">Phone: +91 98765 43210</div>
+
+      <div style="margin-top:12px">
+        <strong>Payment</strong>
+        <div style="color:var(--muted);font-size:13px;margin-top:6px">We accept Stripe, Razorpay & bank transfer. Add payment links to your account to let customers purchase plans directly.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>© <span id="year"></span> YourService. All rights reserved.</div>
+    <div style="color:var(--muted)">Terms • Privacy • Support</div>
+  </footer>
+</div>
+
+<script>
+  // small JS: handle year + simple contact submit
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  document.getElementById('contactForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    // --- replace with your form backend or use Formspree / Getform / Netlify forms / Google Sheets webhook
+    alert('Thanks! We received your request. (This demo uses no backend.)');
+    this.reset();
+  });
+
+  // OPTIONAL: small Chart.js example of the graph area
+  // You may swap hero-graph with a canvas and Chart.js for animated data plots.
+</script>
 </body>
 </html>
