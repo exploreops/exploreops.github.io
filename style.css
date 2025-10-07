@@ -1,20 +1,20 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
     background-color: #fff8f0;
 }
 
 header {
     background-color: #ff7043;
     color: white;
+    padding: 15px;
     text-align: center;
-    padding: 15px 0;
 }
 
 nav ul {
     list-style: none;
     padding: 0;
+    margin: 10px 0 0 0;
 }
 
 nav ul li {
@@ -28,25 +28,30 @@ nav ul li a {
     font-weight: bold;
 }
 
-section {
+main {
     padding: 20px;
-    text-align: center;
+}
+
+section {
+    margin-bottom: 40px;
 }
 
 .gallery img {
     width: 300px;
     margin: 10px;
     border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
 }
 
 .videos iframe {
     margin: 10px;
     border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
 }
 
 footer {
     background-color: #ff7043;
     color: white;
     text-align: center;
-    padding: 10px 0;
+    padding: 10px;
 }
