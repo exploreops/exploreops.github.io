@@ -3,36 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Analysis Website</title>
+    <title>My Cooking Gallery</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>My Data Analysis Website</h1>
+        <h1>My Cooking Gallery</h1>
         <nav>
             <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#data-analysis">Data Analysis</a></li>
+                <li><a href="#photos">Photos</a></li>
+                <li><a href="#videos">Videos</a></li>
             </ul>
         </nav>
     </header>
 
-    <section id="home">
-        <h2>Welcome!</h2>
-        <p>This is a simple website for data analysis and visualization.</p>
+    <section id="photos">
+        <h2>Cooking Photos</h2>
+        <div class="gallery">
+            <img src="images/dish1.jpg" alt="Dish 1">
+            <img src="images/dish2.jpg" alt="Dish 2">
+            <img src="images/dish3.jpg" alt="Dish 3">
+        </div>
     </section>
 
-    <section id="data-analysis">
-        <h2>Data Analysis</h2>
-        <p>Write your Python code and visualize your data here.</p>
-        <textarea id="python-code" placeholder="Write your Python code here..." rows="10" cols="50"></textarea>
-        <br>
-        <button onclick="runPython()">Run Analysis</button>
-
-        <h3>Output:</h3>
-        <pre id="output"></pre>
+    <section id="videos">
+        <h2>Cooking Videos</h2>
+        <div class="videos">
+            <iframe width="360" height="215" src="https://www.youtube.com/embed/VIDEO_ID1" frameborder="0" allowfullscreen></iframe>
+            <iframe width="360" height="215" src="https://www.youtube.com/embed/VIDEO_ID2" frameborder="0" allowfullscreen></iframe>
+        </div>
     </section>
 
-    <script src="script.js"></script>
+    <footer>
+        <p>&copy; 2025 My Cooking Website</p>
+    </footer>
 </body>
 </html>
